@@ -1,6 +1,5 @@
 === WooCommerce Product Sales Countdown Timer ===
 Contributors: arif757266
-Donate link: https://arifulislam.com/
 Tags: wooCommerce, product, Countdown, Sales, Timer, Product Timer, Product Countdown, e-commerce countdown
 Requires at least: 4.7
 Tested up to: 5.6
@@ -28,12 +27,9 @@ WooCommerce Product Sales Countdown Timer plugin easy and flexible way and helps
 
 ### Installation ###
 	
-* Install wooCommerce
-* Then Install WooCommerce Product Sales Countdown Timer
-* After installing, Please navigate to Wp admin->Product->Single Product ->WC Tab Options. In this tab you will get the option Countdown timer tab. 
+Coming soon...
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is stored in the /assets directory.
-2. This is the second screen shot
+Coming soon...
 

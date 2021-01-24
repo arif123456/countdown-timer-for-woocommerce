@@ -1,11 +1,11 @@
-.countdown_wrap {
+.ctfw_countdown_wrap {
     margin: 30px 0;
 }
-.countdown_timer {
+.ctfw_countdown_wrap .countdown_timer {
     display: flex;
 }
 
-.countdown_timer .date {
+.ctfw_countdown_wrap .countdown_timer .date {
     background: #1f1e1e;
     color: #fff;
     width: 60px;
@@ -20,7 +20,7 @@
     
 }
 
-.countdown_timer .countdown-single-item {
+.ctfw_countdown_wrap .countdown_timer .countdown-single-item {
     padding-right: 14px;
     text-align: center;
     font-size: 13px;

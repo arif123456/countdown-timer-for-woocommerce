@@ -165,7 +165,7 @@ class Ctfw_Product_Countdown {
 
                 // Display the result in the element with id="demo"
                 document.getElementById("ctfw_countdown_wrap").innerHTML = 
-                    `<div class="countdown_wrap">
+                    `<div class="ctfw_countdown_wrap">
                         <p><?php echo $text; ?></p>
                     
                         <div class="countdown_timer">

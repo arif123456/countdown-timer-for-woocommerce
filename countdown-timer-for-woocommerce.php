@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name:       WooCommerce Product Sales Countdown Timer
- * Description:       WooCommerce Product Sales Countdown Timer plugin helps you display for single product page.
+ * Plugin Name:       Countdown Timer for WooCommerce
+ * Description:       Countdown Timer for woocommerce plugin helps you display for single product page.
  * Version:           1.0
  * Requires at least: 5.2
- * Requires PHP:      7.2
+ * Requires PHP:      5.4
  * Author:            Ariful Islam
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       woo-countdown-timer
+ * Text Domain:       countdown-timer-for-woocommerce
  */
 
 // don't call the file directly
@@ -16,19 +16,19 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
  
-class Product_Countdown {
+class Ctfw_Product_Countdown {
     
     /**
-     * Initializes the Product_Countdown class
+     * Initializes the Ctfw_Product_Countdown class
      *
-     * Checks for an existing Product_Countdown instance
+     * Checks for an existing Ctfw_Product_Countdown instance
      * and if it cant't find one, then creates it.
      */
 
     public static function init() {
         static $instance = false;
-        if( ! $instance ) {
-            $instance = new Product_Countdown();
+        if( !$instance ) {
+            $instance = new Ctfw_Product_Countdown();
         }
 
         return;
@@ -40,36 +40,36 @@ class Product_Countdown {
     public function __construct() {
 
         // define constants
-        $this->define_constants();
+        $this->ctfw_define_constants();
 
         // includes
-        $this->includes();
+        $this->ctfw_includes();
         
     
     }
 
-    function define_constants() {
-        define( 'WCPC_DIR_FILE', plugin_dir_url( __FILE__ ) );
-        define( 'WCPC_ASSETS', WCPC_DIR_FILE . '/assets' );
+    function ctfw_define_constants() {
+        define( 'CTFW_DIR_FILE', plugin_dir_url( __FILE__ ) );
+        define( 'CTFW_ASSETS', CTFW_DIR_FILE . '/assets' );
     }
 
     /**
     * Includes function
     */
 
-    function includes() {
-        add_filter( 'woocommerce_product_data_tabs', [ $this, 'woo_countdown_timer_tab' ] );
-        add_action( 'woocommerce_product_data_panels', [ $this, 'woo_countdown_timer_product_data_panels' ] );
-        add_action( 'woocommerce_process_product_meta', [ $this, 'woo_countdown_timer_save_fields' ] );
-        add_action( 'woocommerce_single_product_summary', [ $this, 'display_woo_countdown_timer' ], 30);
-        add_action( 'wp_enqueue_scripts', array( $this, 'load_enqueue' ) );
+    function ctfw_includes() {
+        add_filter( 'woocommerce_product_data_tabs', [ $this, 'ctfw_countdown_timer_tab' ] );
+        add_action( 'woocommerce_product_data_panels', [ $this, 'ctfw_countdown_timer_product_data_panels' ] );
+        add_action( 'woocommerce_process_product_meta', [ $this, 'ctfw_countdown_timer_save_fields' ] );
+        add_action( 'woocommerce_single_product_summary', [ $this, 'ctfw_display_countdown_timer' ], 30);
+        add_action( 'wp_enqueue_scripts', array( $this, 'ctfw_load_enqueue' ) );
     }
 
     /**
     * Countdown Tab Function
     */
 
-    function woo_countdown_timer_tab( $product_data_tabs ) {
+    function ctfw_countdown_timer_tab( $product_data_tabs ) {
         $product_data_tabs['my-custom-tab'] = array(
             'label'     =>  __( 'Product Countdown', 'woo-countdown-timer' ),
             'target'    => 'my_custom_product_data',
@@ -81,7 +81,7 @@ class Product_Countdown {
     * Product Data Panels Function
     */
 
-    function woo_countdown_timer_product_data_panels() {
+    function ctfw_countdown_timer_product_data_panels() {
         ?>
             <div id='my_custom_product_data' class='panel woocommerce_options_panel'>
                 <div class='options_group'>
@@ -93,11 +93,11 @@ class Product_Countdown {
                         ) );
 
                         woocommerce_wp_text_input( array(
-                            'id'         => '_valid_for_timer_text',
-                            'label'      => __( 'Timer Heading Text', 'woo-countdown-timer' ),
-                            'desc_tip'   => 'true',
-                            'description'=> __( 'Enter timer header text', 'woo-countdown-timer' ),
-                            'type'       => 'text',
+                            'id'				=> '_valid_for_timer_text',
+                            'label'				=> __( 'Timer Heading Text', 'woo-countdown-timer' ),
+                            'desc_tip'			=> 'true',
+                            'description'		=> __( 'Enter timer header text', 'woo-countdown-timer' ),
+                            'type' 				=> 'text',
                         ) );
 
                         woocommerce_wp_text_input( array(
@@ -125,11 +125,11 @@ class Product_Countdown {
     * Field Save Function
     */
 
-    function woo_countdown_timer_save_fields( $post_id ) {
+    function ctfw_countdown_timer_save_fields( $post_id ) {
         $valid_for_date         = isset( $_POST[ '_valid_for_date' ] ) ? sanitize_text_field( wp_unslash( $_POST[ '_valid_for_date' ] ) ) : '';
         $valid_for_date_time    = isset( $_POST[ '_valid_for_date_time' ] ) ? sanitize_text_field( wp_unslash( $_POST[ '_valid_for_date_time' ] )  ) : '';
         $valid_for_head_text    = isset( $_POST[ '_valid_for_timer_text' ] ) ? sanitize_text_field( wp_unslash( $_POST[ '_valid_for_timer_text' ] )  ) : '';
-        $enable_timer           = isset( $_POST[ '_enable_timer' ] ) ? 'yes' : 'no';
+        $enable_timer           = isset($_POST['_enable_timer']) ? 'yes' : 'no';
 
         update_post_meta( $post_id, '_valid_for_date', esc_attr( $valid_for_date ) );
         update_post_meta( $post_id, '_valid_for_date_time',  esc_attr( $valid_for_date_time ) );
@@ -142,15 +142,15 @@ class Product_Countdown {
     * Display Data Showing Function
     */
 
-    function display_woo_countdown_timer() {
-        $date           = get_post_meta( get_the_ID(), '_valid_for_date', true );
-        $time           = get_post_meta( get_the_ID(), '_valid_for_date_time', true );
-        $text           = get_post_meta( get_the_ID(), '_valid_for_timer_text', true );
-        $enable_timer   = get_post_meta( get_the_ID(), '_enable_timer', true );
+    function ctfw_display_countdown_timer() {
+        $date = get_post_meta( get_the_ID(), '_valid_for_date', true );
+        $time = get_post_meta( get_the_ID(), '_valid_for_date_time', true );
+        $text = get_post_meta( get_the_ID(), '_valid_for_timer_text', true );
+        $enable_timer = get_post_meta( get_the_ID(), '_enable_timer', true );
 
         ?>
            <?php if( 'yes' === $enable_timer && ! empty( $date ) ) {
-               ?> <p id="demo"></p><?php
+               ?> <p id="ctfw_countdown_wrap"></p><?php
            } ?>
             
             <script>
@@ -164,7 +164,7 @@ class Product_Countdown {
                 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                 // Display the result in the element with id="demo"
-                document.getElementById("demo").innerHTML = 
+                document.getElementById("ctfw_countdown_wrap").innerHTML = 
                     `<div class="countdown_wrap">
                         <p><?php echo $text; ?></p>
                     
@@ -186,9 +186,9 @@ class Product_Countdown {
                     `
 
                 // If the count down is finished, write some text
-                if ( distance < 0 ) {
+                if (distance < 0) {
                     clearInterval(x);
-                    document.getElementById("demo").innerHTML = "<span class='expire-texxt'>EXPIRED</span>";
+                    document.getElementById("ctfw_countdown_wrap").innerHTML = "<span class='expire-text'>EXPIRED</span>";
                 }
                 }, 1000);
             </script>
@@ -204,14 +204,14 @@ class Product_Countdown {
      *
      * @return void
      */
-    function load_enqueue() {
-        wp_enqueue_style( 'woo-countdown-timer-style', WCPC_ASSETS . '/css/style.css' );
+    function ctfw_load_enqueue() {
+        wp_enqueue_style( 'woo-countdown-timer-style', CTFW_ASSETS . '/css/style.css' );
         
     }
 
 }
 
-function product_countdown() {
-    return Product_Countdown::init();
+function ctfw_product_countdown() {
+    return Ctfw_Product_Countdown::init();
 }
-product_countdown();
+ctfw_product_countdown();
